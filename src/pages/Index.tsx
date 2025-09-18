@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { RecordingBubble } from '@/components/RecordingBubble';
 import { TranscriptView } from '@/components/TranscriptView';
-import { ApiTokenDialog } from '@/components/ApiTokenDialog';
 import { useVoiceRecording } from '@/hooks/useVoiceRecording';
 
 const Index = () => {
-  const [apiToken, setApiToken] = useState<string>('');
-  const [showTokenDialog, setShowTokenDialog] = useState(true);
+  // You can add your API token here later
+  const API_TOKEN = 'your-api-token-here';
   
   const {
     isRecording,
@@ -16,24 +15,9 @@ const Index = () => {
     startRecording,
     stopRecording,
     resetTranscript,
-  } = useVoiceRecording(apiToken);
+  } = useVoiceRecording(API_TOKEN);
 
   const hasTranscript = transcript.length > 0;
-
-  useEffect(() => {
-    // Check if token exists in localStorage
-    const savedToken = localStorage.getItem('voiceApiToken');
-    if (savedToken) {
-      setApiToken(savedToken);
-      setShowTokenDialog(false);
-    }
-  }, []);
-
-  const handleTokenSubmit = (token: string) => {
-    setApiToken(token);
-    localStorage.setItem('voiceApiToken', token);
-    setShowTokenDialog(false);
-  };
 
   const handleNewRecording = () => {
     resetTranscript();
@@ -91,12 +75,6 @@ const Index = () => {
           </div>
         )}
       </div>
-
-      {/* API Token Dialog */}
-      <ApiTokenDialog
-        open={showTokenDialog}
-        onTokenSubmit={handleTokenSubmit}
-      />
 
       {/* Error toast will be handled by the useVoiceRecording hook */}
     </div>

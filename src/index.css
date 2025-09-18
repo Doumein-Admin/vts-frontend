@@ -8,53 +8,54 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark AI theme with glassomorphic design */
-    --background: 220 26% 6%;
-    --foreground: 210 20% 95%;
+    /* Modern emerald/teal theme with warm accents */
+    --background: 210 20% 5%;
+    --foreground: 180 10% 95%;
 
-    --card: 220 26% 8%;
-    --card-foreground: 210 20% 95%;
+    --card: 210 20% 7%;
+    --card-foreground: 180 10% 95%;
 
-    --popover: 220 26% 8%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 210 20% 7%;
+    --popover-foreground: 180 10% 95%;
 
-    --primary: 263 85% 65%;
+    --primary: 158 64% 52%;
     --primary-foreground: 210 20% 5%;
 
-    --secondary: 220 26% 12%;
-    --secondary-foreground: 210 20% 95%;
+    --secondary: 210 20% 12%;
+    --secondary-foreground: 180 10% 95%;
 
-    --muted: 220 26% 12%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 210 20% 12%;
+    --muted-foreground: 180 8% 65%;
 
-    --accent: 263 85% 65%;
+    --accent: 158 64% 52%;
     --accent-foreground: 210 20% 5%;
 
     --destructive: 0 75% 60%;
-    --destructive-foreground: 210 20% 95%;
+    --destructive-foreground: 180 10% 95%;
 
-    --border: 220 26% 15%;
-    --input: 220 26% 15%;
-    --ring: 263 85% 65%;
+    --border: 210 20% 15%;
+    --input: 210 20% 15%;
+    --ring: 158 64% 52%;
 
     --radius: 1rem;
 
     /* AI-specific design tokens */
-    --ai-primary: 263 85% 65%;
-    --ai-secondary: 280 75% 70%;
-    --ai-accent: 200 85% 60%;
-    --ai-surface: 220 26% 8%;
-    --ai-surface-elevated: 220 26% 12%;
-    --ai-glass: 220 26% 15%;
+    --ai-primary: 158 64% 52%;
+    --ai-secondary: 187 71% 60%;
+    --ai-accent: 48 96% 65%;
+    --ai-surface: 210 20% 7%;
+    --ai-surface-elevated: 210 20% 12%;
+    --ai-glass: 180 15% 20%;
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-secondary)));
     --gradient-glass: linear-gradient(135deg, hsl(var(--ai-glass) / 0.15), hsl(var(--ai-glass) / 0.05));
     --gradient-ai: linear-gradient(135deg, hsl(var(--ai-primary) / 0.2), hsl(var(--ai-accent) / 0.2));
+    --gradient-warm: linear-gradient(135deg, hsl(var(--ai-accent) / 0.3), hsl(var(--ai-primary) / 0.3));
     
     /* Shadows */
-    --shadow-glass: 0 8px 32px 0 hsl(var(--ai-primary) / 0.1);
-    --shadow-glow: 0 0 50px hsl(var(--ai-primary) / 0.3);
+    --shadow-glass: 0 8px 32px 0 hsl(var(--ai-primary) / 0.15);
+    --shadow-glow: 0 0 50px hsl(var(--ai-primary) / 0.4);
     --shadow-recording: 0 0 0 0 hsl(var(--ai-primary) / 0.7);
     
     /* Animations */
@@ -126,7 +127,8 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground overflow-hidden;
-    background: radial-gradient(ellipse at center, hsl(var(--ai-primary) / 0.05) 0%, hsl(var(--background)) 70%);
+    background: radial-gradient(ellipse at center, hsl(var(--ai-primary) / 0.08) 0%, hsl(var(--background)) 60%),
+                linear-gradient(135deg, hsl(var(--ai-accent) / 0.03) 0%, hsl(var(--background)) 100%);
   }
 }
 
