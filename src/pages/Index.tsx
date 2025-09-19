@@ -1,44 +1,7 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { TranscriptView } from '@/components/TranscriptView';
 import { useVoiceRecording } from '@/hooks/useVoiceRecording';
-
-interface TranscriptViewProps {
-  transcript: string;
-  isVisible: boolean;
-  onNewRecording: () => void;
-}
-
-const TranscriptView = ({ transcript, isVisible, onNewRecording }: TranscriptViewProps) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 50 }}
-      transition={{ duration: 0.5 }}
-      className={`w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 ${
-        isVisible ? 'block' : 'hidden'
-      }`}
-    >
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 max-h-[70vh] overflow-y-auto">
-        {/* Transcript content */}
-        <div className="text-gray-800 dark:text-gray-200 text-base sm:text-lg leading-relaxed">
-          {transcript}
-        </div>
-
-        {/* New Recording Button */}
-        <div className="mt-4 flex justify-end">
-          <button
-            onClick={onNewRecording}
-            className="p-2 rounded-full bg-gradient-to-r from-ai-primary to-ai-accent text-white hover:opacity-90 transition-opacity"
-            aria-label="Start new recording"
-          >
-            <X size={24} />
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Index = () => {
   const API_TOKEN = import.meta.env.VITE_API_TOKEN;
@@ -82,7 +45,7 @@ const Index = () => {
 
       {/* Center AI Bubble */}
       <AnimatePresence>
-        {!hasTranscript && (
+        {!hasTranscript && !isTranscribing && (
           <motion.button
             key="ai-bubble"
             onClick={isRecording ? stopRecording : startRecording}
@@ -103,6 +66,31 @@ const Index = () => {
               {isRecording ? "Stop" : "Start"}
             </span>
           </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Transcribing Bubble */}
+      <AnimatePresence>
+        {isTranscribing && (
+          <motion.div
+            key="transcribing-bubble"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
+          >
+            <div className="relative flex items-center justify-center rounded-full w-48 h-48 md:w-64 md:h-64 bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent shadow-2xl">
+              <div className="absolute inset-0 rounded-full bg-white/10 animate-pulse" />
+              <div className="text-center">
+                <div className="text-white font-bold text-xl md:text-2xl mb-2">Transcribing...</div>
+                <div className="flex space-x-1 justify-center">
+                  <div className="w-3 h-3 bg-white rounded-full animate-bounce" />
+                  <div className="w-3 h-3 bg-white rounded-full animate-bounce animation-delay-100" />
+                  <div className="w-3 h-3 bg-white rounded-full animate-bounce animation-delay-200" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 

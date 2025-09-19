@@ -93,29 +93,31 @@ export function TranscriptView({ transcript, isVisible, onNewRecording }: Transc
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-              <div className="glass rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-ai-primary">
-                  {transcript.split(' ').filter(word => word.length > 0).length}
+            {/* Stats - Only show for short transcripts */}
+            {transcript.length <= 500 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div className="glass rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-ai-primary">
+                    {transcript.split(' ').filter(word => word.length > 0).length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Words</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Words</div>
-              </div>
-              
-              <div className="glass rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-ai-secondary">
-                  {transcript.length}
+
+                <div className="glass rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-ai-secondary">
+                    {transcript.length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Characters</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Characters</div>
-              </div>
-              
-              <div className="glass rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-ai-accent">
-                  {Math.ceil(transcript.split(' ').length / 200) || 1}
+
+                <div className="glass rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-ai-accent">
+                    {Math.ceil(transcript.split(' ').length / 200) || 1}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Min read</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Min read</div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
