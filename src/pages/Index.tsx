@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { RecordingBubble } from '@/components/RecordingBubble';
 import { TranscriptView } from '@/components/TranscriptView';
 import { useVoiceRecording } from '@/hooks/useVoiceRecording';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Index = () => {
-  // You can add your API token here later
-  const API_TOKEN = import.meta.env.VITE_API_TOKEN;  
+  const API_TOKEN = import.meta.env.VITE_API_TOKEN;
 
   const {
     isRecording,
@@ -24,59 +23,85 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-ai-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-ai-secondary/10 rounded-full blur-3xl animate-pulse animation-delay-1000" />
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-ai-accent/10 rounded-full blur-3xl animate-pulse animation-delay-2000" />
-      </div>
+    <div className="min-h-screen w-full relative flex items-center justify-center overflow-hidden bg-background">
+      {/* Subtle animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-ai-primary/5 via-ai-secondary/10 to-ai-accent/5 animate-gradient" />
 
-      {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Header */}
+      {/* Header */}
+      {!hasTranscript && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 text-center z-20">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent bg-clip-text text-transparent">
+              AI Voice
+            </span>
+            <br />
+            <span className="text-foreground">Transcription</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-md mx-auto">
+            Transform your voice into text with precision AI technology
+          </p>
+        </div>
+      )}
+
+      {/* Center AI Bubble */}
+      <AnimatePresence>
         {!hasTranscript && (
-          <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center z-20 ai-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent bg-clip-text text-transparent">
-                AI Voice
-              </span>
-              <br />
-              <span className="text-foreground">Transcription</span>
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-md mx-auto">
-              Transform your voice into text with precision AI technology
-            </p>
-          </div>
+          <motion.button
+            key="ai-bubble"
+            onClick={isRecording ? stopRecording : startRecording}
+            className="relative flex items-center justify-center rounded-full w-32 h-32 md:w-40 md:h-40 bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent shadow-xl"
+            animate={{
+              scale: isRecording ? [1, 1.1, 1] : 1,
+              boxShadow: isRecording
+                ? "0 0 40px rgba(99,102,241,0.6)"
+                : "0 0 20px rgba(99,102,241,0.3)",
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: isRecording ? Infinity : 0,
+              ease: "easeInOut",
+            }}
+          >
+            <span className="text-white font-semibold text-lg">
+              {isRecording ? "Stop" : "Start"}
+            </span>
+          </motion.button>
         )}
+      </AnimatePresence>
 
-        {/* Recording Bubble */}
-        <RecordingBubble
-          isRecording={isRecording}
-          isTranscribing={isTranscribing}
-          isMinimized={hasTranscript}
-          onStartRecording={startRecording}
-          onStopRecording={stopRecording}
-        />
+      {/* Bubble shrinks & moves bottom-right after transcript */}
+      {hasTranscript && (
+        <motion.div
+          key="ai-bubble-min"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{
+            opacity: 1,
+            scale: 0.8,
+            x: "calc(50vw - 5rem)",
+            y: "calc(50vh - 5rem)",
+          }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed bottom-8 right-8 w-20 h-20 rounded-full bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent shadow-lg flex items-center justify-center"
+        >
+          <span className="text-white font-bold">AI</span>
+        </motion.div>
+      )}
 
-        {/* Transcript View */}
-        <TranscriptView
-          transcript={transcript}
-          isVisible={hasTranscript}
-          onNewRecording={handleNewRecording}
-        />
+      {/* Transcript */}
+      <TranscriptView
+        transcript={transcript}
+        isVisible={hasTranscript}
+        onNewRecording={handleNewRecording}
+      />
 
-        {/* Footer */}
-        {!hasTranscript && (
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center ai-fade-in">
-            <p className="text-sm text-muted-foreground">
-              Powered by advanced AI • Secure & Private
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Error toast will be handled by the useVoiceRecording hook */}
+      {/* Footer */}
+      {!hasTranscript && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+          <p className="text-sm text-muted-foreground">
+            Powered by advanced AI • Secure & Private
+          </p>
+        </div>
+      )}
     </div>
   );
 };
