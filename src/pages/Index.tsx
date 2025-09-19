@@ -5,8 +5,8 @@ import { useVoiceRecording } from '@/hooks/useVoiceRecording';
 
 const Index = () => {
   // You can add your API token here later
-  const API_TOKEN = 'your-api-token-here';
-  
+  const API_TOKEN = import.meta.env.VITE_API_TOKEN;  
+
   const {
     isRecording,
     isTranscribing,
