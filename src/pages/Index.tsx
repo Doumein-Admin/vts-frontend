@@ -14,6 +14,7 @@ const Index = () => {
     error,
     startRecording,
     stopRecording,
+    cancelRecording,
     resetTranscript,
   } = useVoiceRecording(API_TOKEN);
 
@@ -24,7 +25,7 @@ const Index = () => {
   };
 
   const handleCancelRecording = () => {
-    stopRecording();
+    cancelRecording();
     resetTranscript(); // back to normal stage
   };
 
@@ -145,7 +146,7 @@ const Index = () => {
       {!hasTranscript && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
           <p className="text-sm text-muted-foreground">
-            Powered by advanced AI • Secure & Private
+            Powered by Doumein Industries
           </p>
         </div>
       )}

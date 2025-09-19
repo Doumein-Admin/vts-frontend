@@ -9,6 +9,7 @@ interface UseVoiceRecordingReturn {
   error: string | null;
   startRecording: () => Promise<void>;
   stopRecording: () => void;
+  cancelRecording: () => void;
   resetTranscript: () => void;
 }
 
@@ -20,11 +21,13 @@ export function useVoiceRecording(apiToken: string): UseVoiceRecordingReturn {
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const isCancelledRef = useRef(false);
   const { toast } = useToast();
 
   const startRecording = useCallback(async () => {
     try {
       setError(null);
+      isCancelledRef.current = false;
 
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -47,8 +50,10 @@ export function useVoiceRecording(apiToken: string): UseVoiceRecordingReturn {
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/mp4' });
-        await transcribeAudio(audioBlob);
+        if (!isCancelledRef.current) {
+          const audioBlob = new Blob(chunksRef.current, { type: 'audio/mp4' });
+          await transcribeAudio(audioBlob);
+        }
 
         // Stop all tracks
         stream.getTracks().forEach(track => track.stop());
@@ -76,6 +81,7 @@ export function useVoiceRecording(apiToken: string): UseVoiceRecordingReturn {
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
+      isCancelledRef.current = false;
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setIsTranscribing(true);
@@ -134,6 +140,16 @@ const transcribeAudio = useCallback(async (audioBlob: Blob) => {
   }, [apiToken, toast]);
 
 
+  const cancelRecording = useCallback(() => {
+    if (mediaRecorderRef.current && isRecording) {
+      isCancelledRef.current = true;
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      chunksRef.current = [];
+      mediaRecorderRef.current = null;
+    }
+  }, [isRecording]);
+
   const resetTranscript = useCallback(() => {
     setTranscript('');
     setError(null);
@@ -146,6 +162,7 @@ const transcribeAudio = useCallback(async (audioBlob: Blob) => {
     error,
     startRecording,
     stopRecording,
+    cancelRecording,
     resetTranscript,
   };
 }
