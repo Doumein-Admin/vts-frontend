@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TranscriptView } from '@/components/TranscriptView';
 import { useVoiceRecording } from '@/hooks/useVoiceRecording';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const API_TOKEN = import.meta.env.VITE_API_TOKEN;
@@ -20,6 +21,11 @@ const Index = () => {
 
   const handleNewRecording = () => {
     resetTranscript();
+  };
+
+  const handleCancelRecording = () => {
+    stopRecording();
+    resetTranscript(); // back to normal stage
   };
 
   return (
@@ -43,11 +49,11 @@ const Index = () => {
         </div>
       )}
 
-      {/* Center AI Bubble + Cancel */}
+      {/* Center AI Bubble */}
       <AnimatePresence>
         {!hasTranscript && !isTranscribing && (
           <motion.div
-            key="ai-bubble-container"
+            key="ai-bubble"
             className="relative flex flex-col items-center justify-center space-y-4"
           >
             <motion.button
@@ -56,30 +62,30 @@ const Index = () => {
               animate={{
                 scale: isRecording ? [1, 1.1, 1] : 1,
                 boxShadow: isRecording
-                  ? '0 0 40px rgba(99,102,241,0.6)'
-                  : '0 0 20px rgba(99,102,241,0.3)',
+                  ? "0 0 40px rgba(99,102,241,0.6)"
+                  : "0 0 20px rgba(99,102,241,0.3)",
               }}
               transition={{
                 duration: 1.5,
                 repeat: isRecording ? Infinity : 0,
-                ease: 'easeInOut',
+                ease: "easeInOut",
               }}
             >
               <span className="text-white font-semibold text-lg">
-                {isRecording ? 'Stop' : 'Start'}
+                {isRecording ? "Stop" : "Start"}
               </span>
             </motion.button>
 
+            {/* Cancel button visible only while recording */}
             {isRecording && (
-              <button
-                onClick={() => {
-                  stopRecording();
-                  resetTranscript(); // cancel effect
-                }}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white font-semibold shadow-md"
+              <Button
+                onClick={handleCancelRecording}
+                variant="destructive"
+                size="sm"
+                className="mt-4"
               >
                 Cancel
-              </button>
+              </Button>
             )}
           </motion.div>
         )}
@@ -98,9 +104,7 @@ const Index = () => {
             <div className="relative flex items-center justify-center rounded-full w-48 h-48 md:w-64 md:h-64 bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent shadow-2xl">
               <div className="absolute inset-0 rounded-full bg-white/10 animate-pulse" />
               <div className="text-center">
-                <div className="text-white font-bold text-xl md:text-2xl mb-2">
-                  Transcribing...
-                </div>
+                <div className="text-white font-bold text-xl md:text-2xl mb-2">Transcribing...</div>
                 <div className="flex space-x-1 justify-center">
                   <div className="w-3 h-3 bg-white rounded-full animate-bounce" />
                   <div className="w-3 h-3 bg-white rounded-full animate-bounce animation-delay-100" />
@@ -120,10 +124,10 @@ const Index = () => {
           animate={{
             opacity: 1,
             scale: 0.8,
-            x: 'calc(50vw - 5rem)',
-            y: 'calc(50vh - 5rem)',
+            x: "calc(50vw - 5rem)",
+            y: "calc(50vh - 5rem)",
           }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
           className="fixed bottom-8 right-8 w-20 h-20 rounded-full bg-gradient-to-r from-ai-primary via-ai-secondary to-ai-accent shadow-lg flex items-center justify-center"
         >
           <span className="text-white font-bold">AI</span>
@@ -135,7 +139,6 @@ const Index = () => {
         transcript={transcript}
         isVisible={hasTranscript}
         onNewRecording={handleNewRecording}
-        onCopy={() => navigator.clipboard.writeText(transcript)}
       />
 
       {/* Footer */}
