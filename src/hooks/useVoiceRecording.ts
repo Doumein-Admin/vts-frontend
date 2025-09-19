@@ -35,7 +35,7 @@ export function useVoiceRecording(apiToken: string): UseVoiceRecordingReturn {
       });
 
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
+        mimeType: 'audio/mp4;codecs=mp4a.40.2'
       });
 
       chunksRef.current = [];
@@ -47,7 +47,7 @@ export function useVoiceRecording(apiToken: string): UseVoiceRecordingReturn {
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(chunksRef.current, { type: 'audio/mp4' });
         await transcribeAudio(audioBlob);
 
         // Stop all tracks
@@ -91,7 +91,7 @@ export function useVoiceRecording(apiToken: string): UseVoiceRecordingReturn {
 const transcribeAudio = useCallback(async (audioBlob: Blob) => {
     try {
       const formData = new FormData();
-      formData.append('file', audioBlob, 'recording.webm');
+      formData.append('file', audioBlob, 'recording.m4a');
       
       const response = await fetch(
         'https://braindesk-60025565520.development.catalystserverless.in/server/vts-api/transcribe',
