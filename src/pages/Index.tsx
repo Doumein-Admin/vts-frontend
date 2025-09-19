@@ -1,7 +1,44 @@
 import { useState } from 'react';
-import { TranscriptView } from '@/components/TranscriptView';
-import { useVoiceRecording } from '@/hooks/useVoiceRecording';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+import { useVoiceRecording } from '@/hooks/useVoiceRecording';
+
+interface TranscriptViewProps {
+  transcript: string;
+  isVisible: boolean;
+  onNewRecording: () => void;
+}
+
+const TranscriptView = ({ transcript, isVisible, onNewRecording }: TranscriptViewProps) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 50 }}
+      transition={{ duration: 0.5 }}
+      className={`w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 ${
+        isVisible ? 'block' : 'hidden'
+      }`}
+    >
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 max-h-[70vh] overflow-y-auto">
+        {/* Transcript content */}
+        <div className="text-gray-800 dark:text-gray-200 text-base sm:text-lg leading-relaxed">
+          {transcript}
+        </div>
+
+        {/* New Recording Button */}
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={onNewRecording}
+            className="p-2 rounded-full bg-gradient-to-r from-ai-primary to-ai-accent text-white hover:opacity-90 transition-opacity"
+            aria-label="Start new recording"
+          >
+            <X size={24} />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Index = () => {
   const API_TOKEN = import.meta.env.VITE_API_TOKEN;
